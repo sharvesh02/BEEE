@@ -1,0 +1,36 @@
+// Clear the workspace, command window, and close all figures
+clear; 
+clc; 
+close all; 
+
+// Define the analog filter transfer function H(s)
+s = poly(0, 's'); 
+Omegac = 0.2 * %pi; 
+H = Omegac / (s + Omegac); 
+
+// Sampling period
+T = 1; // Sampling period T = 1 Second 
+
+// Define the digital filter transfer function using bilinear transformation
+z = poly(0, 'z'); 
+Hz = horner(H, (2 / T) * ((z - 1) / (z + 1))); 
+
+// Compute the frequency response of the digital filter
+HW = frmag(Hz(2), Hz(3), 512); 
+W = 0:%pi / 511:%pi; 
+
+// Plot the magnitude response
+plot(W / %pi, HW); 
+a = gca(); 
+a.thickness = 3; 
+a.foreground = 1; 
+a.font_style = 9;  
+xgrid(1); 
+
+// Add title and axis labels
+xtitle('Magnitude Response of Single Pole LPF Filter (Cutoff frequency = 0.2*\pi)', ...
+       'Digital Frequency --->', ...
+       'Magnitude'); 
+
+// Display the digital filter transfer function
+disp("Hz", Hz); 
