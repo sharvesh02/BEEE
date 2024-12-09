@@ -1,0 +1,9 @@
+clear; 
+clc; 
+close; 
+s = %s; 
+z = %z; 
+Hs = (8*s + 4.525) / (s^2 + 0.692*s + 0.504); 
+T = 1; 
+Hz = horner(Hs, (2/T) * (z - 1) / (z + 1)); 
+disp(Hz, "H(z) = ");
