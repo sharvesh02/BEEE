@@ -1,0 +1,44 @@
+// Band-Stop Filter Using Digital Filter Transformation
+clear; 
+clc; 
+close all; 
+
+// Define filter specifications
+omegaP = 0.2 * %pi; // Passband cutoff frequency
+omegaL = (2 / 5) * %pi; // Lower cutoff frequency
+omegaU = (3 / 5) * %pi; // Upper cutoff frequency
+
+// Define z-transform variable
+z = poly(0, 'z'); 
+
+// Low-Pass Filter (LPF) prototype
+H_LPF = (0.245) * (1 + (z^-1)) / (1 - 0.509 * (z^-1)); 
+
+// Transformation parameters
+alpha = cos((omegaU + omegaL) / 2) / cos((omegaU - omegaL) / 2); 
+k = tan((omegaU - omegaL) / 2) * tan(omegaP / 2); 
+
+// Transformation for Band-Stop Filter (BSF)
+NUM = ((z^2) - ((2 * alpha / (1 + k)) * z) + ((1 - k) / (1 + k))); 
+DEN = (1 - ((2 * alpha / (1 + k)) * z) + (((1 - k) / (1 + k)) * (z^2))); 
+HZ_BSF = horner(H_LPF, NUM / DEN); 
+
+// Frequency response of the BSF
+HW = frmag(HZ_BSF(2), HZ_BSF(3), 512); 
+W = 0:%pi / 511:%pi; 
+
+// Plot the magnitude response
+plot(W / %pi, HW); 
+a = gca(); 
+a.thickness = 3; 
+a.foreground = 1; 
+a.font_style = 9;  
+xgrid(1); 
+
+// Add title and axis labels
+xtitle('Magnitude Response of BSF Filter', ...
+       'Digital Frequency --->', ...
+       'Magnitude'); 
+
+// Display the BSF transfer function
+disp("Digital BSF IIR Filter H(Z)= ", HZ_BSF); 
