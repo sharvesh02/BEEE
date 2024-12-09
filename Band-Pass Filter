@@ -1,0 +1,44 @@
+// Band-Pass Filter Using Digital Filter Transformation
+clear; 
+clc; 
+close all; 
+
+// Define parameters
+omegaP = 0.2 * %pi; // Passband cutoff frequency
+omegaL = (2 / 5) * %pi; // Lower stopband frequency
+omegaU = (3 / 5) * %pi; // Upper stopband frequency
+
+// Define z-transform variable
+z = poly(0, 'z'); 
+
+// Define Low-Pass Filter (LPF) transfer function
+H_LPF = (0.245) * (1 + (z^-1)) / (1 - 0.509 * (z^-1)); 
+
+// Transformation parameters
+alpha = cos((omegaU + omegaL) / 2) / cos((omegaU - omegaL) / 2); 
+k = (cos((omegaU - omegaL) / 2) / sin((omegaU - omegaL) / 2)) * tan(omegaP / 2); 
+
+// Transformation for BPF
+NUM = -((z^2) - ((2 * alpha * k / (k + 1)) * z) + ((k - 1) / (k + 1))); 
+DEN = 1 - ((2 * alpha * k / (k + 1)) * z) + (((k - 1) / (k + 1)) * (z^2)); 
+HZ_BPF = horner(H_LPF, NUM / DEN); 
+
+// Display the BPF transfer function
+disp("Digital BPF IIR Filter H(Z)= ", HZ_BPF); 
+
+// Compute the frequency response
+HW = frmag(HZ_BPF(2), HZ_BPF(3), 512); 
+W = 0:%pi / 511:%pi; 
+
+// Plot the magnitude response
+plot(W / %pi, HW); 
+a = gca(); 
+a.thickness = 3; 
+a.foreground = 1; 
+a.font_style = 9;  
+xgrid(1); 
+
+// Add title and axis labels
+xtitle('Magnitude Response of BPF Filter', ...
+       'Digital Frequency --->', ...
+       'Magnitude'); 
