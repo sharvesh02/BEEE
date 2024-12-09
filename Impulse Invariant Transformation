@@ -1,0 +1,26 @@
+clear; 
+clc; 
+close; 
+
+s = %s; 
+T = 0.2; // Sampling period
+
+// Define the transfer function Hs(s) explicitly as a rational expression
+num = 10 * [1 7 10]; // Numerator coefficients of Hs(s)
+den = [1 0 0];       // Denominator coefficients of Hs(s) (s^2)
+
+Hs = syslin('c', num, den); // Continuous-time transfer function in rational form
+
+// Factorize Hs(s) into poles using pfss
+etts = pfss(Hs); 
+disp(etts, "Factorised Hs = "); 
+
+// Extract poles manually (from context, we assume p1 = -5, p2 = -2)
+p1 = -5; 
+p2 = -2; 
+
+z = %z; 
+
+// Impulse Invariant Transformation
+Hz = T * ((-3.33 * (1 - %e^(p1*T) * z^(-1))) + (3.33 * (1 - %e^(p2*T) * z^(-1))));
+disp(Hz, "H(z) = ");
