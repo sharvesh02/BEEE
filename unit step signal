@@ -1,0 +1,19 @@
+clc;
+clear;
+
+// Define the time vector
+t = -10:0.1:10; // From -10 to 10 with step size of 0.1
+
+// Initialize the unit step signal
+u = zeros(size(t)); // Create a zero array of the same size as t
+
+// Assign 1 for t >= 0
+u(find(t >= 0)) = 1; // Set values to 1 where t >= 0
+
+// Plot the unit step signal
+plot(t, u, 'b', 'LineWidth', 2);
+xlabel("Time (t)");
+ylabel("Amplitude");
+title("Unit Step Signal");
+xtitle("Unit Step Signal");
+grid on;
